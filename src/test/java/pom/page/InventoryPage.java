@@ -1,7 +1,13 @@
 package pom.page;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import pom.common.DriverManager;
 import pom.common.WebUI;
+
+import java.time.Duration;
 
 public class InventoryPage {
     private final By inventoryContainer = By.id("inventory_container");
@@ -9,28 +15,30 @@ public class InventoryPage {
     private final By cartBadge = By.cssSelector(".shopping_cart_badge");
 
     public InventoryPage() {}
+
     public boolean isLoaded() {
         try {
             WebUI.getWebElement(inventoryContainer);
-            return WebUI.getCurrentUrl().contains("inventory.html");
+            return WebUI.getWebElement(cartLink).isDisplayed();
         } catch (Exception e) {
             return false;
         }
     }
 
-    public boolean waitUntilLoaded(int timeout) {
-        long start = System.nanoTime();
-        try {
-            WebUI.waitForElementVisible(inventoryContainer, timeout);
-            return WebUI.getWebElement(cartLink).isDisplayed();
-        } catch (Exception e) {
-            return false;
-        } finally {
-            long end = System.nanoTime();
-            long ms = (end - start) / 1_000_000;
-            System.out.println("[InventoryPage] Load wait took ~" + ms + " ms");
-        }
+    public long measureLoginToInventory() {
+        WebDriver d = DriverManager.getDriver();
+
+        long start = System.currentTimeMillis();
+        new WebDriverWait(d, Duration.ofSeconds(30))
+                .until(ExpectedConditions.visibilityOfElementLocated(cartLink));
+
+        long end = System.currentTimeMillis();
+        long elapsed = end - start;
+        System.out.println("[Login→Cart visible] took ~" + elapsed + " ms");
+        return elapsed;
     }
+
+
     public InventoryPage addItemToCart(String productName) {
         String addBtn = String.format(
                 "//div[normalize-space()='%s']/ancestor::div[@class='inventory_item']//button[normalize-space()='Add to cart']",
@@ -38,6 +46,23 @@ public class InventoryPage {
         );
         WebUI.clickElement(By.xpath(addBtn));
         return this;
+    }
+
+    public InventoryPage removeItemToCart(String productName) {
+        String addBtn = String.format(
+                "//div[normalize-space()='%s']/ancestor::div[@class='inventory_item']//button[normalize-space()='Remove']",
+                productName
+        );
+        WebUI.clickElement(By.xpath(addBtn));
+        return this;
+    }
+
+    public boolean isItemAddToCart(String productName) {
+        String addBtn = String.format(
+                "//div[normalize-space()='%s']/ancestor::div[@class='inventory_item']//button[normalize-space()='Add to cart']",
+                productName
+        );
+        return WebUI.getWebElements(By.xpath(addBtn)).size() > 0;
     }
 
     public CartPage goToCart() {

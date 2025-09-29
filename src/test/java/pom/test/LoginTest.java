@@ -3,12 +3,13 @@ package pom.test;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pom.common.BaseSetup;
+import pom.common.DriverManager;
 import pom.page.InventoryPage;
 import pom.page.LoginPage;
 
 public class LoginTest extends BaseSetup {
     @Test(dataProvider = "loginCases", dataProviderClass = AccountProvider.class)
-    public void loginEdgeCases(String user, String pass, boolean expectSuccess, String expectedErrorPart, String variant) {
+    public void loginEdgeCases(String user, String pass, boolean expectSuccess, String expectedErrorPart, String variant) throws InterruptedException {
         LoginPage page = new LoginPage();
         InventoryPage inventory = page.loginAs(user, pass);
 
@@ -16,10 +17,8 @@ public class LoginTest extends BaseSetup {
             boolean loaded;
             switch (variant) {
                 case "PERF":
-                    loaded = inventory.waitUntilLoaded(3);
-                    Assert.assertFalse(loaded, "Inventory should need more time to load for performance_glitch_user with extended timeout");
-                    loaded = inventory.waitUntilLoaded(3);
-                    Assert.assertTrue(loaded, "Inventory should need more time to load for performance_glitch_user with extended timeout");
+                    long timeForLoad = inventory.measureLoginToInventory();
+                    Assert.assertTrue(timeForLoad > 5000, "Inventory should need more time to load for performance_glitch_user with extended timeout");
                     break;
 
                 case "VISUAL":
@@ -30,11 +29,17 @@ public class LoginTest extends BaseSetup {
                 case "PROBLEM":
                     loaded = inventory.isLoaded();
                     Assert.assertTrue(loaded, "Inventory should load for problem_user");
+                    inventory.addItemToCart("Sauce Labs Backpack");
+                    inventory.removeItemToCart("Sauce Labs Backpack");
+                    Assert.assertFalse(inventory.isItemAddToCart("Sauce Labs Backpack"), "Product cannot be removed");
                     break;
 
                 case "ERROR":
                     loaded = inventory.isLoaded();
                     Assert.assertTrue(loaded, "Inventory should load for error_user");
+                    inventory.addItemToCart("Sauce Labs Backpack");
+                    inventory.removeItemToCart("Sauce Labs Backpack");
+                    Assert.assertFalse(inventory.isItemAddToCart("Sauce Labs Backpack"), "Product cannot be removed");
                     break;
 
                 default:

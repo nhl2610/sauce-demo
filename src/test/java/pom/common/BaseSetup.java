@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -69,11 +70,11 @@ public class BaseSetup {
         prefs.put("credentials_enable_service", false);
         prefs.put("profile.password_manager_enabled", false);
         options.setExperimentalOption("prefs", prefs);
-
+        options.setPageLoadStrategy(PageLoadStrategy.NONE);
         WebDriver d = new ChromeDriver(options);
         d.manage().window().maximize();
         d.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
-        d.manage().timeouts().implicitlyWait(Duration.ofSeconds(1));
+        d.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
         d.get(appURL);
         return d;
     }

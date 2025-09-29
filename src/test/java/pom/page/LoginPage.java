@@ -2,6 +2,7 @@ package pom.page;
 
 import org.openqa.selenium.By;
 import pom.common.WebUI;
+
 public class LoginPage {
     private By username = By.xpath("//input[@id='user-name']");
     private By password = By.xpath("//input[@id='password']");
@@ -20,7 +21,7 @@ public class LoginPage {
     }
 
     public void submit() {
-        WebUI.clickElement(btnLogin);
+        WebUI.jsClickById("login-button");
     }
 
     public InventoryPage loginAs(String user, String pass) {

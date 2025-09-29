@@ -1,12 +1,10 @@
 package pom.common;
 
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.testng.Assert;
 
@@ -84,7 +82,7 @@ public class WebUI {
         sleep(STEP_TIME);
         String text = getWebElement(by).getText();
         logConsole("Get text: " + text);
-        return text; //Trả về một giá trị kiểu String
+        return text;
     }
 
     public static void waitForElementVisible(By by) {
@@ -97,14 +95,14 @@ public class WebUI {
         }
     }
 
-    public static void waitForElementVisible(By by, int timeOut) {
-        try {
-            WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(timeOut), Duration.ofMillis(500));
-            wait.until(ExpectedConditions.visibilityOfElementLocated(by));
-        } catch (Throwable error) {
-            Assert.fail("Timeout waiting for the element Visible. " + by.toString());
-            logConsole("Timeout waiting for the element Visible. " + by.toString());
-        }
+    public static void jsClickById(String idSelector) {
+        WebDriver d = DriverManager.getDriver();
+        WebDriver raw = (d instanceof WrapsDriver) ? ((WrapsDriver) d).getWrappedDriver() : d;
+        JavascriptExecutor js = (JavascriptExecutor) raw;
+        js.executeScript(
+        "setTimeout(() => { document.getElementById(arguments[0])?.click(); }, 0);",
+            idSelector
+        );
     }
 
     public static void waitForPageLoaded() {
