@@ -22,7 +22,7 @@ public class InventoryPage {
         long start = System.nanoTime();
         try {
             WebUI.waitForElementVisible(inventoryContainer, timeout);
-            return WebUI.getCurrentUrl().contains("inventory.html");
+            return WebUI.getWebElement(cartLink).isDisplayed();
         } catch (Exception e) {
             return false;
         } finally {
