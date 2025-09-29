@@ -37,8 +37,6 @@ public class BaseSetup {
     }
 
     private WebDriver initChromeDriver(String appURL) {
-        WebDriver driver;
-
         System.out.println("Launching Chrome browser...");
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
@@ -80,8 +78,6 @@ public class BaseSetup {
     }
 
     private WebDriver initFirefoxDriver(String appURL) {
-        WebDriver driver;
-
         FirefoxOptions options = new FirefoxOptions();
         if (Boolean.parseBoolean(System.getProperty("headless", "false"))) {
             options.addArguments("-headless");

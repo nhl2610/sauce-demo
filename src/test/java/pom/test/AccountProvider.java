@@ -15,12 +15,17 @@ public class AccountProvider {
                {"standard_user", "", false, "Epic sadface: Password is required", "NONE"},
                {"unknown_user", "secret_sauce", false, "Epic sadface: Username and password do not match any user in this service", "NONE"},
                {"  standard_user  ", "secret_sauce", false, "Epic sadface: Username and password do not match any user in this service", "NONE"},
-
-                {"performance_glitch_user", "secret_sauce", true, null, "PERF"},
                {"visual_user", "secret_sauce", true, null, "VISUAL"},
                {"problem_user", "secret_sauce", true, null, "PROBLEM"},
                {"error_user", "secret_sauce", true, null, "ERROR"},
 
+        };
+    }
+
+    @DataProvider(name = "performanceCases")
+    public static Object[][] performanceCases() {
+        return new Object[][]{
+            {"performance_glitch_user", "secret_sauce", true, null, "PERF"},
         };
     }
 }

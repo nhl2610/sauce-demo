@@ -2,6 +2,7 @@ package pom.page;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pom.common.DriverManager;
@@ -16,6 +17,9 @@ public class InventoryPage {
 
     public InventoryPage() {}
 
+    public By getInventoryContainer() {
+        return inventoryContainer;
+    }
     public boolean isLoaded() {
         try {
             WebUI.getWebElement(inventoryContainer);

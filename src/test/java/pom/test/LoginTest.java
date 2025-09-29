@@ -16,11 +16,6 @@ public class LoginTest extends BaseSetup {
         if (expectSuccess) {
             boolean loaded;
             switch (variant) {
-                case "PERF":
-                    long timeForLoad = inventory.measureLoginToInventory();
-                    Assert.assertTrue(timeForLoad > 5000, "Inventory should need more time to load for performance_glitch_user with extended timeout");
-                    break;
-
                 case "VISUAL":
                     loaded = inventory.isLoaded();
                     Assert.assertTrue(loaded, "Inventory should load for visual_user");
@@ -53,6 +48,16 @@ public class LoginTest extends BaseSetup {
                         "Error text should contain: " + expectedErrorPart + " | actual: " + page.getErrorText());
             }
         }
+    }
+
+    @Test(dataProvider = "performanceCases", dataProviderClass = AccountProvider.class)
+    public void loginPerformanceGlitchUser(String user, String pass, boolean expectSuccess, String expectedErrorPart, String variant) throws InterruptedException {
+        LoginPage loginPage = new LoginPage();
+        loginPage.enterUsername(user);
+        loginPage.enterPassword(pass);
+        long timeForLoad = loginPage.measureLoginToInventoryTime();
+        Assert.assertTrue(timeForLoad > 5000, "Inventory should need more time to load for performance_glitch_user with extended timeout");
+
     }
 
 }

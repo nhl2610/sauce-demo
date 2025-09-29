@@ -60,14 +60,6 @@ public class WebUI {
         logConsole("Click element: " + by);
     }
 
-    public static void clickElement(By by, long timeout) {
-        waitForPageLoaded();
-        waitForElementVisible(by);
-        sleep(STEP_TIME);
-        getWebElement(by).click();
-        logConsole("Click element: " + by);
-    }
-
     public static void setText(By by, String value) {
         waitForPageLoaded();
         waitForElementVisible(by);
@@ -93,16 +85,6 @@ public class WebUI {
             Assert.fail("Timeout waiting for the element Visible. " + by.toString());
             logConsole("Timeout waiting for the element Visible. " + by.toString());
         }
-    }
-
-    public static void jsClickById(String idSelector) {
-        WebDriver d = DriverManager.getDriver();
-        WebDriver raw = (d instanceof WrapsDriver) ? ((WrapsDriver) d).getWrappedDriver() : d;
-        JavascriptExecutor js = (JavascriptExecutor) raw;
-        js.executeScript(
-        "setTimeout(() => { document.getElementById(arguments[0])?.click(); }, 0);",
-            idSelector
-        );
     }
 
     public static void waitForPageLoaded() {
